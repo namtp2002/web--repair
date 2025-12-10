@@ -8,24 +8,9 @@ echo "====================================="
 echo "Warranty Management System - Docker Build"
 echo "====================================="
 
-# Bước 1: Clean và Build Maven project
+# Build Docker images với Maven build bên trong
 echo ""
-echo "Step 1: Building Maven project..."
-mvn clean package -DskipTests
-
-if [ $? -ne 0 ]; then
-    echo "ERROR: Maven build failed!"
-    exit 1
-fi
-
-# Bước 2: Stop và remove containers cũ (nếu có)
-echo ""
-echo "Step 2: Stopping old containers..."
-docker-compose down
-
-# Bước 3: Build Docker images
-echo ""
-echo "Step 3: Building Docker images..."
+echo "Building Docker images (Maven build included)..."
 docker-compose build --no-cache
 
 if [ $? -ne 0 ]; then
@@ -33,9 +18,14 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Bước 4: Start containers
+# Stop và remove containers cũ (nếu có)
 echo ""
-echo "Step 4: Starting containers..."
+echo "Stopping old containers..."
+docker-compose down
+
+# Start containers
+echo ""
+echo "Starting containers..."
 docker-compose up -d
 
 if [ $? -ne 0 ]; then
@@ -43,9 +33,9 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Bước 5: Wait for services to be ready
+# Wait for services to be ready
 echo ""
-echo "Step 5: Waiting for services to be ready..."
+echo "Waiting for services to be ready..."
 echo "Waiting for MySQL..."
 sleep 10
 

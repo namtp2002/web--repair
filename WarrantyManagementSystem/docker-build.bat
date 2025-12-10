@@ -7,13 +7,23 @@ echo =====================================
 echo Warranty Management System - Docker Build
 echo =====================================
 
-REM Bước 1: Clean và Build Maven project
+REM Build Docker images với Maven build bên trong
 echo.
-echo Step 1: Building Maven project...
-call mvn clean package -DskipTests
+echo Building Docker images (Maven build included)...
+docker-compose build --no-cache
 
 if errorlevel 1 (
-    echo ERROR: Maven build failed!
+    echo ERROR: Docker build failed!
+    exit /b 1
+)
+
+REM Build Docker images với Maven build bên trong
+echo.
+echo Building Docker images (Maven build included)...
+docker-compose build --no-cache
+
+if errorlevel 1 (
+    echo ERROR: Docker build failed!
     exit /b 1
 )
 
@@ -22,19 +32,9 @@ echo.
 echo Step 2: Stopping old containers...
 docker-compose down
 
-REM Bước 3: Build Docker images
+REM Bước 3: Start containers
 echo.
-echo Step 3: Building Docker images...
-docker-compose build --no-cache
-
-if errorlevel 1 (
-    echo ERROR: Docker build failed!
-    exit /b 1
-)
-
-REM Bước 4: Start containers
-echo.
-echo Step 4: Starting containers...
+echo Step 3: Starting containers...
 docker-compose up -d
 
 if errorlevel 1 (
@@ -42,21 +42,21 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Bước 5: Wait for services to be ready
+REM Bước 4: Wait for services to be ready
 echo.
-echo Step 5: Waiting for services to be ready...
+echo Step 4: Waiting for services to be ready...
 echo Waiting for MySQL...
 timeout /t 10 /nobreak > nul
 
 echo Waiting for Tomcat...
 timeout /t 15 /nobreak > nul
 
-REM Bước 6: Check status
+REM Bước 5: Check status
 echo.
-echo Step 6: Checking container status...
+echo Step 5: Checking container status...
 docker-compose ps
 
-REM Bước 7: Show information
+REM Bước 6: Show information
 echo.
 echo =====================================
 echo Deployment completed!
